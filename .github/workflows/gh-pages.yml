@@ -43,7 +43,9 @@ jobs:
         uses: actions/configure-pages@v2
 
       - name: Set baseURL
-        run: sed -i "s|https://www.neurodesk.org/|${{ steps.pages.outputs.base_url }}/|g" config.toml
+        run: |
+          ROOT_URL=$(echo ${{ steps.pages.outputs.base_url }} | awk -F[/:] '{print $4}')
+          sed -i "s|https://www.neurodesk.org/|https://${ROOT_URL}/|g" config.toml
 
       - name: Install dependencies
         run: | 
@@ -54,7 +56,7 @@ jobs:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
-          echo "BASEURL=${{ steps.pages.outputs.base_url }}"
+          echo "BASE_URL=${{ steps.pages.outputs.base_url }}"
           hugo \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
