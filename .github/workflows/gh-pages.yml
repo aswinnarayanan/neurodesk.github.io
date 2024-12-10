@@ -45,6 +45,7 @@ jobs:
       - name: Set baseURL
         run: |
           ROOT_URL=$(echo ${{ steps.pages.outputs.base_url }} | awk -F[/:] '{print $4}')
+          echo "ROOT_URL=${ROOT_URL}"
           sed -i "s|https://www.neurodesk.org/|https://${ROOT_URL}/|g" config.toml
 
       - name: Install dependencies
