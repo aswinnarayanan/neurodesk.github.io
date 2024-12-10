@@ -42,12 +42,6 @@ jobs:
         id: pages
         uses: actions/configure-pages@v2
 
-      - name: Set baseURL
-        run: |
-          ROOT_URL=$(echo ${{ steps.pages.outputs.base_url }} | awk -F[/:] '{print $4}')
-          echo "ROOT_URL=${ROOT_URL}"
-          sed -i "s|https://www.neurodesk.org/|https://${ROOT_URL}/|g" config.toml
-
       - name: Install dependencies
         run: | 
           npm install
@@ -57,10 +51,11 @@ jobs:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
         run: |
-          echo "BASE_URL=${{ steps.pages.outputs.base_url }}"
+          ROOT_URL=$(echo ${{ steps.pages.outputs.base_url }} | awk -F[/:] '{print $4}')
+          echo "ROOT_URL=${ROOT_URL}"
           hugo \
             --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+            --baseURL "https://${ROOT_URL}//"
 
       - name: Add custom domain
         if: github.repository == 'NeuroDesk/neurodesk.github.io'
